@@ -172,7 +172,7 @@ class Product_Alternatives {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$this->loader->add_filter( 'customize_cart_item_name', $plugin_public, 'woocommerce_cart_item_name',10,3);
 	}
 
 	/**

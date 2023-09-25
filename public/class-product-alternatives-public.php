@@ -100,4 +100,17 @@ class Product_Alternatives_Public {
 
 	}
 
+
+	public function customize_cart_item_name($product_name, $cart_item, $cart_item_key) {
+		// Check if the product is an extra product (customize this check)
+		if (is_extra_product($cart_item['product_id'])) {
+			$product_name = 'Extra: ' . $product_name;
+			echo("test extra product");
+		}
+		
+		return $product_name;
+	}
+	
+
+
 }
