@@ -2,3 +2,49 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+.extra_aditionals_container .product {
+    text-align: center;
+    display: block;
+    margin: 0px 5px;
+    padding: 15px 0;
+    border: 1px solid #dedede;
+    min-height: 145px;
+    margin-top: 15px;
+    box-sizing: border-box;
+}
+
+
+
+.extra_aditionals_container .add_to_cart_button{
+    color: #423b3b;
+    padding: 5px;
+    background: #f5edf3;
+    display: block;
+    width: 130px;
+    border-radius: 17px;
+    border: solid 1px #423b3b;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.extra_aditionals_container .product img {
+    max-width: 100px;
+    display: block;
+    margin: 0 auto;
+}
+
+.extra_aditionals_container .aditionals_title {
+    background: #f5edf3;
+    margin: 0;
+    padding: 10px 40px;
+}
+
+.extra_aditionals_container .woocommerce-loop-product__title {
+font-size: 1rem;
+}
+
+
+
+.extra_aditionals_container{
+    margin-bottom: 50px;
+}

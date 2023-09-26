@@ -20,7 +20,8 @@
  * @subpackage Product_Alternatives/public
  * @author     Juan GRanja <ggjuanb@hotmail.com>
  */
-class Product_Alternatives_Public {
+class Product_Alternatives_Public
+{
 
 	/**
 	 * The ID of this plugin.
@@ -47,7 +48,8 @@ class Product_Alternatives_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version)
+	{
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
@@ -59,7 +61,8 @@ class Product_Alternatives_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -73,7 +76,7 @@ class Product_Alternatives_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/product-alternatives-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/product-alternatives-public.css', array(), $this->version, 'all');
 
 	}
 
@@ -82,7 +85,8 @@ class Product_Alternatives_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -96,21 +100,95 @@ class Product_Alternatives_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/product-alternatives-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/product-alternatives-public.js', array('jquery'), $this->version, false);
 
 	}
 
 
-	public function customize_cart_item_name($product_name, $cart_item, $cart_item_key) {
-		// Check if the product is an extra product (customize this check)
-		if (is_extra_product($cart_item['product_id'])) {
-			$product_name = 'Extra: ' . $product_name;
-			echo("test extra product");
+	//Adding Products form Extras to the cart Page
+	public function display_products_from_specific_category_in_cart()
+	{
+		// Get the specific category ID or slug
+		$category_id = 'extra-products';
+
+		// Query products from the specified category
+		$args = array(
+			'post_type' => 'product',
+			'posts_per_page' => -1,
+			'product_cat' => $category_id,
+		);
+		$query = new WP_Query($args);
+
+		// Check if there are products in the category
+		if ($query->have_posts()) {
+
+			echo '<div class="row extra_aditionals_container">';
+			echo '<h2 class="aditionals_title">Aditionals Products</h2>';
+			while ($query->have_posts()) {
+				$query->the_post();
+				// Display product information here
+				wc_get_template_part('content', 'product');
+			}
+			wp_reset_postdata();
+			echo '</div>';
 		}
-		
-		return $product_name;
 	}
-	
 
 
+	public function exclude_category_from_shop_page($query)
+	{
+		if (is_admin() || !$query->is_main_query()) {
+			return;
+		}
+
+		if (!is_cart() || !is_checkout()) {
+
+			$exclude_category_slug = 'extra-products'; // Replace 'your-category-slug' with the slug of the category you want to exclude.
+			$term = get_term_by('slug', $exclude_category_slug, 'product_cat');
+			if ($term) {
+				$query->set(
+					'tax_query',
+					array(
+						array(
+							'taxonomy' => 'product_cat',
+							'field' => 'id',
+							'terms' => $term->term_id,
+							'operator' => 'NOT IN',
+						),
+					)
+				);
+			}
+
+		}
+
+
+	}
+
+
+
+	public function hide_aditionals_from_shortcode($query)
+	{
+
+
+		//excludin
+		$excluded_category_slug = 'extra-products'; // Replace with the slug of the category you want to exclude.
+
+		// Get the category ID by slug.
+		$excluded_category = get_term_by('slug', $excluded_category_slug, 'product_cat');
+
+		if ($excluded_category && isset($excluded_category->term_id)) {
+			$excluded_category_id = $excluded_category->term_id;
+
+			// Add a 'tax_query' to exclude products from the specified category.
+			$query['tax_query'][] = array(
+				'taxonomy' => 'product_cat',
+				'field' => 'id',
+				'terms' => $excluded_category_id,
+				'operator' => 'NOT IN',
+			);
+		}
+
+		return $query;
+
+	}
 }
