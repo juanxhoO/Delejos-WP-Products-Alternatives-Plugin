@@ -179,7 +179,11 @@ class Product_Alternatives
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 		$this->loader->add_action('woocommerce_before_cart_table', $plugin_public, 'display_products_from_specific_category_in_cart');
 		$this->loader->add_action('pre_get_posts', $plugin_public, 'exclude_category_from_shop_page');
+		
 		$this->loader->add_filter('woocommerce_shortcode_products_query', $plugin_public, 'hide_aditionals_from_shortcode', 10,3);
+		$this->loader->add_action('init', $plugin_public, 'create_additional_products_category');
+		
+	
 	}
 
 	/**

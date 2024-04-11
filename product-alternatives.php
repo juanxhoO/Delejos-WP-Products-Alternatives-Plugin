@@ -13,11 +13,11 @@
  * @package           Product_Alternatives
  *
  * @wordpress-plugin
- * Plugin Name:       Product Alternatives 
+ * Plugin Name:       Delejos Product Alternatives 
  * Plugin URI:        https://dsdsd
  * Description:       This Plugions Helpts with the Creations of  Additional Products and Attributes with values 
  * Version:           1.0.0
- * Author:            Juan GRanja
+ * Author:            Juan Granja
  * Author URI:        https://dssd
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt

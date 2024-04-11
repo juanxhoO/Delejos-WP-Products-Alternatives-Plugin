@@ -105,6 +105,36 @@ class Product_Alternatives_Public
 	}
 
 
+	public function create_additional_products_category(){
+		    // Check if WooCommerce is active
+			if ( ! function_exists( 'WC' ) ) {
+				return;
+			}
+		
+			// Set your custom category name
+			$category_name = 'Custom Category';
+		
+			// Check if the category already exists
+			$category = get_term_by('name', $category_name, 'product_cat');
+		
+			//If the category does not exist, create it
+			if (empty($category)) {
+				$term = wp_insert_term(
+					$category_name, // The name of the category
+					'product_cat'   // The taxonomy to which the category belongs (product categories)
+				);
+		
+				// If the term creation was successful
+				if (!is_wp_error($term)) {
+					// Optionally, you can add some meta data to the term here
+					// For example, you can set custom thumbnail, description, etc.
+				} else {
+					// Handle error if term creation fails
+					error_log('Failed to create custom category: ' . $term->get_error_message());
+				}
+			}
+	}
+
 	//Adding Products form Extras to the cart Page
 	public function display_products_from_specific_category_in_cart()
 	{
