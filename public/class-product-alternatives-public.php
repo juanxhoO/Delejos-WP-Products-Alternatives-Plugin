@@ -53,7 +53,6 @@ class Product_Alternatives_Public
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -77,7 +76,6 @@ class Product_Alternatives_Public
 		 */
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/product-alternatives-public.css', array(), $this->version, 'all');
-
 	}
 
 	/**
@@ -101,45 +99,45 @@ class Product_Alternatives_Public
 		 */
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/product-alternatives-public.js', array('jquery'), $this->version, false);
-
 	}
 
 
-	public function create_additional_products_category(){
-		    // Check if WooCommerce is active
-			if ( ! function_exists( 'WC' ) ) {
-				return;
+	public function create_additional_products_category()
+	{
+		// Check if WooCommerce is active
+		if (!function_exists('WC')) {
+			return;
+		}
+
+		// Set your custom category name
+		$category_name = 'Aditional Products';
+
+		// Check if the category already exists
+		$category = get_term_by('name', $category_name, 'product_cat');
+
+		//If the category does not exist, create it
+		if (empty($category)) {
+			$term = wp_insert_term(
+				$category_name, // The name of the category
+				'product_cat'   // The taxonomy to which the category belongs (product categories)
+			);
+
+			// If the term creation was successful
+			if (!is_wp_error($term)) {
+				// Optionally, you can add some meta data to the term here
+				// For example, you can set custom thumbnail, description, etc.
+			} else {
+				// Handle error if term creation fails
+				error_log('Failed to create custom category: ' . $term->get_error_message());
 			}
-		
-			// Set your custom category name
-			$category_name = 'Custom Category';
-		
-			// Check if the category already exists
-			$category = get_term_by('name', $category_name, 'product_cat');
-		
-			//If the category does not exist, create it
-			if (empty($category)) {
-				$term = wp_insert_term(
-					$category_name, // The name of the category
-					'product_cat'   // The taxonomy to which the category belongs (product categories)
-				);
-		
-				// If the term creation was successful
-				if (!is_wp_error($term)) {
-					// Optionally, you can add some meta data to the term here
-					// For example, you can set custom thumbnail, description, etc.
-				} else {
-					// Handle error if term creation fails
-					error_log('Failed to create custom category: ' . $term->get_error_message());
-				}
-			}
+		}
 	}
 
 	//Adding Products form Extras to the cart Page
 	public function display_products_from_specific_category_in_cart()
 	{
 		// Get the specific category ID or slug
-		$category_id = 'extra-products';
+		$category_id = 'aditional-products';
 
 		// Query products from the specified category
 		$args = array(
@@ -173,7 +171,7 @@ class Product_Alternatives_Public
 
 		if (!is_cart() || !is_checkout()) {
 
-			$exclude_category_slug = 'extra-products'; // Replace 'your-category-slug' with the slug of the category you want to exclude.
+			$exclude_category_slug = 'aditional-products'; // Replace 'your-category-slug' with the slug of the category you want to exclude.
 			$term = get_term_by('slug', $exclude_category_slug, 'product_cat');
 			if ($term) {
 				$query->set(
@@ -188,20 +186,16 @@ class Product_Alternatives_Public
 					)
 				);
 			}
-
 		}
-
-
 	}
 
 
-
+	//Prevent to us category shortcode to pages an dposts
 	public function hide_aditionals_from_shortcode($query)
 	{
 
-
 		//excludin
-		$excluded_category_slug = 'extra-products'; // Replace with the slug of the category you want to exclude.
+		$excluded_category_slug = 'aditional-products'; // Replace with the slug of the category you want to exclude.
 
 		// Get the category ID by slug.
 		$excluded_category = get_term_by('slug', $excluded_category_slug, 'product_cat');
@@ -219,6 +213,41 @@ class Product_Alternatives_Public
 		}
 
 		return $query;
+	}
 
+
+	public function limit_quantity_and_prevent_duplicates($passed, $product_id)
+	{
+		// Specify the category name or custom taxonomy term you want to limit the check to
+		$specific_category = 'aditional-products'; // Change this to your desired category name or custom taxonomy term
+
+		// Check if the product belongs to the specific category
+		$product_categories = wp_get_post_terms($product_id, 'product_cat', array('fields' => 'slugs'));
+
+		if (in_array($specific_category, $product_categories)) {
+			// Check if the product is already in the cart
+			if (WC()->cart->find_product_in_cart(WC()->cart->generate_cart_id($product_id))) {
+				// If the product is already in the cart, prevent adding it again
+				WC()->session->set('duplicate_product_notice', __('This product is already in your cart.', 'your-text-domain'));
+				
+				return false;
+			}
+		}
+		
+		return $passed;
+	}
+
+
+	function display_cart_notices()
+	{
+		// Check if there are notices set in session and display them
+		if (WC()->session->get('duplicate_product_notice')) {
+			wc_add_notice(WC()->session->get('duplicate_product_notice'), 'error');
+			WC()->session->__unset('duplicate_product_notice');
+		}
+		if (WC()->session->get('quantity_notice')) {
+			wc_add_notice(WC()->session->get('quantity_notice'), 'error');
+			WC()->session->__unset('quantity_notice');
+		}
 	}
 }

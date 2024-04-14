@@ -20,7 +20,8 @@
  * @subpackage Product_Alternatives/includes
  * @author     Juan GRanja <ggjuanb@hotmail.com>
  */
-class Product_Alternatives_Activator {
+class Product_Alternatives_Activator
+{
 
 	/**
 	 * Short Description. (use period)
@@ -29,8 +30,9 @@ class Product_Alternatives_Activator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function activate() {
+	public static function activate()
+	{
 
+		
 	}
-
 }

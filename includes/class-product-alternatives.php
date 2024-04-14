@@ -80,7 +80,6 @@ class Product_Alternatives
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -126,7 +125,6 @@ class Product_Alternatives
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-product-alternatives-public.php';
 
 		$this->loader = new Product_Alternatives_Loader();
-
 	}
 
 	/**
@@ -144,7 +142,6 @@ class Product_Alternatives
 		$plugin_i18n = new Product_Alternatives_i18n();
 
 		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
-
 	}
 
 	/**
@@ -161,7 +158,6 @@ class Product_Alternatives
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-
 	}
 
 	/**
@@ -175,14 +171,17 @@ class Product_Alternatives
 	{
 
 		$plugin_public = new Product_Alternatives_Public($this->get_plugin_name(), $this->get_version());
+		$this->loader->add_action('init', $plugin_public, 'create_additional_products_category');
+
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 		$this->loader->add_action('woocommerce_before_cart_table', $plugin_public, 'display_products_from_specific_category_in_cart');
 		$this->loader->add_action('pre_get_posts', $plugin_public, 'exclude_category_from_shop_page');
-		
-		$this->loader->add_filter('woocommerce_shortcode_products_query', $plugin_public, 'hide_aditionals_from_shortcode', 10,3);
-		$this->loader->add_action('init', $plugin_public, 'create_additional_products_category');
-		
+
+		$this->loader->add_filter('woocommerce_shortcode_products_query', $plugin_public, 'hide_aditionals_from_shortcode', 10, 3);
+		$this->loader->add_filter('woocommerce_add_to_cart_validation', $plugin_public, 'limit_quantity_and_prevent_duplicates', 10, 2);
+		//$this->loader->add_action( 'woocommerce_before_cart', 'display_cart_notices', 10 );
+		$this->loader->add_filter( 'woocommerce_before_cart',$plugin_public,  'display_cart_notices', 10 );
 	
 	}
 
@@ -229,5 +228,4 @@ class Product_Alternatives
 	{
 		return $this->version;
 	}
-
 }

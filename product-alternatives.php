@@ -13,7 +13,7 @@
  * @package           Product_Alternatives
  *
  * @wordpress-plugin
- * Plugin Name:       Delejos Product Alternatives 
+ * Plugin Name:       Woocommerce Aditional Products 
  * Plugin URI:        https://dsdsd
  * Description:       This Plugions Helpts with the Creations of  Additional Products and Attributes with values 
  * Version:           1.0.0
