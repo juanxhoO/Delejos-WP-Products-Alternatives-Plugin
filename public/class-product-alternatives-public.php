@@ -229,14 +229,14 @@ class Product_Alternatives_Public
 			if (WC()->cart->find_product_in_cart(WC()->cart->generate_cart_id($product_id))) {
 				// If the product is already in the cart, prevent adding it again
 				WC()->session->set('duplicate_product_notice', __('This product is already in your cart.', 'your-text-domain'));
-				
-				return false;
+
+				add_filter('woocommerce_cart_redirect_after_error', '__return_false');
+				$passed = false;
 			}
 		}
-		
+
 		return $passed;
 	}
-
 
 	function display_cart_notices()
 	{
